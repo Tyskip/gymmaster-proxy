@@ -5,7 +5,7 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: "Missing API Key" });
     }
 
-    const response = await fetch("https://humbabeathletics.gymmasteronline.com/portal/api/v1/memberships", {
+    const response = await fetch("https://gymmaster-proxy-kwsn-a5c1vlz2s-tyskips-projects.vercel.app/api/memberships", {
       headers: {
         "X-API-Key": API_KEY
       }
