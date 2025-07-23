@@ -1,1 +1,9 @@
+{
+  "name": "gymmaster-proxy",
+  "version": "1.0.0",
+  "main": "api/memberships.js",
+  "scripts": {
+    "build": "echo \"No build step\""
+  }
+}
 
