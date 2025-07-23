@@ -3,6 +3,7 @@ export default async function handler(req, res) {
     const API_KEY = process.env.GYMMASTER_API_KEY;
 
     if (!API_KEY) {
+      console.error("Missing GymMaster API Key in environment variables");
       return res.status(500).json({ error: "Missing GymMaster API Key" });
     }
 
@@ -13,12 +14,17 @@ export default async function handler(req, res) {
       }
     });
 
-    const data = await response.json();
+    if (!response.ok) {
+      const text = await response.text();
+      console.error("GymMaster API returned error:", response.status, text);
+      return res.status(response.status).json({ error: "GymMaster API error", details: text });
+    }
 
-    res.status(response.status).json(data);
+    const data = await response.json();
+    return res.status(200).json(data);
 
   } catch (error) {
-    console.error("GymMaster API Error:", error);
-    res.status(500).json({ error: "Internal server error", details: error.message });
+    console.error("Unhandled error in proxy:", error);
+    return res.status(500).json({ error: "Internal server error", details: error.message });
   }
 }
