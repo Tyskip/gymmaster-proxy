@@ -1,11 +1,20 @@
 export default async function handler(req, res) {
+  res.setHeader('Access-Control-Allow-Origin', '*'); // Allow all domains (or restrict to your Webflow URL)
+  res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+
+  if (req.method === 'OPTIONS') {
+    // Handle preflight CORS requests
+    return res.status(200).end();
+  }
+
   try {
     const API_KEY = process.env.GYMMASTER_API_KEY;
     if (!API_KEY) {
       return res.status(500).json({ error: "Missing API Key" });
     }
 
-    const response = await fetch("https://gymmaster-proxy-kwsn-a5c1vlz2s-tyskips-projects.vercel.app/api/memberships", {
+    const response = await fetch("https://humbabeathletics.gymmasteronline.com/portal/api/v1/memberships", {
       headers: {
         "X-API-Key": API_KEY
       }
@@ -18,8 +27,8 @@ export default async function handler(req, res) {
     }
 
     const data = JSON.parse(text);
-    return res.status(200).json(data);
 
+    return res.status(200).json(data);
   } catch (error) {
     return res.status(500).json({ error: "Internal Server Error", details: error.message });
   }
