@@ -14,13 +14,23 @@ export default async function handler(req, res) {
       }
     });
 
+    const text = await response.text();  // get raw response
+
     if (!response.ok) {
-      const text = await response.text();
-      console.error("GymMaster API returned error:", response.status, text);
+      console.error("GymMaster API returned error status:", response.status);
+      console.error("Response body:", text);
       return res.status(response.status).json({ error: "GymMaster API error", details: text });
     }
 
-    const data = await response.json();
+    let data;
+    try {
+      data = JSON.parse(text);
+    } catch (e) {
+      console.error("Failed to parse JSON:", e);
+      console.error("Response text was:", text);
+      return res.status(500).json({ error: "Invalid JSON from GymMaster API", details: text });
+    }
+
     return res.status(200).json(data);
 
   } catch (error) {
